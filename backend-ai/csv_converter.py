@@ -7,7 +7,7 @@ import random
 import io
 from image_to_ocr import convert_data_to_json
 
-COLUMNS = ['name', 'role', 'hkid', 'cwr_card_no', 'cwr_expiry_date', 'green_card_expiry_date', 'spp_expiry_date']
+COLUMNS = ['name', 'role', 'hkid', 'date_of_birth', 'cwr_card_no', 'cwr_expiry_date', 'green_card_expiry_date', 'spp_expiry_date']
 DATE_COLS = ['cwr_expiry_date', 'green_card_expiry_date', 'spp_expiry_date']
 
 def fix_bad_zipfile(file_path):
@@ -54,13 +54,14 @@ def format_to_yyyy_mm_dd(val: str) -> str:
 def normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Standardizes DataFrame structure, fills default values, formats dates, and orders columns."""
     num_cols = len(df.columns)
-    if num_cols < 6:
-        raise ValueError(f"Insufficient columns in input data ({num_cols} < 6)")
+    if num_cols < 7:
+        raise ValueError(f"Insufficient columns in input data ({num_cols} < 7)")
 
-    if num_cols == 6:
+    if num_cols == 7:
         df.columns = [
             'name',
             'hkid',
+            'date_of_birth',
             'cwr_card_no',
             'cwr_expiry_date',
             'green_card_expiry_date',
@@ -68,7 +69,7 @@ def normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         ]
         df['role'] = 'Security Guard'
     else:
-        df = df.iloc[:, :7].copy()
+        df = df.iloc[:, :8].copy()
         df.columns = COLUMNS
 
     # Ensure role defaults to 'Security Guard' if blank or missing
@@ -134,6 +135,8 @@ def csv_converter(
         print("Passing to Cloud AI...")
         try:
             json_text = convert_data_to_json(input_source)
+            # print("Type: ", type(json_text))
+            # print(json_text)
             # Clean markdown formatting if present
             if isinstance(json_text, str):
                 json_text = json_text.replace("```json", "").replace("```", "").strip()

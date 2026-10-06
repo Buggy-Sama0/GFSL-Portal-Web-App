@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import base64
+import time
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -30,6 +31,7 @@ def convert_data_to_json(data):
         "name": "Chan Tai Man",
         "role": "Security Guard",
         "hkid": "A123456(7)",
+        "date_of_birth": "1961-09-01",
         "cwr_card_no": "CWR98765432",
         "cwr_expiry_date": "2027-08-15",
         "green_card_expiry_date": "2028-03-20",
@@ -56,15 +58,16 @@ def convert_data_to_json(data):
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
-
+    start_time = time.time()
     response = client.chat.completions.create(
-        model = "deepseek-v4-pro",
+        model = "deepseek-flash",
         messages = messages,
         stream = False,
-        response_format = {
-            'type': 'json_object',
-        } 
+        extra_body={"thinking": {"type": "disabled"}}
     )
+    
+    api_duration = time.time() - start_time
+    print(f"API Execution Time: {api_duration:.2f} seconds")
 
     return response.choices[0].message.content
 

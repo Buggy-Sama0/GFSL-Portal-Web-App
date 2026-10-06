@@ -9,7 +9,7 @@ export default function VideoSection() {
       badge: 'AI isprocessing each record one by one so it may take a few seconds to process.',
       videoSrc: '/screen-capture-1.mp4',
       steps: [
-        'Copy unstructured text containing guard records conatining filelds: name, hkid, cwr_card_no, cwr_expiry_date, green_card_expiry_date, spp_expiry_date.',
+        'Copy unstructured text containing guard records conatining filelds: name, hkid, date_of_birth, cwr_card_no, cwr_expiry_date, green_card_expiry_date, spp_expiry_date.',
         'Click Process to automatically parse into CSV.',
       ],
     },
